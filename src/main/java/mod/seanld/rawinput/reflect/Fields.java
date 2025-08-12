@@ -134,7 +134,7 @@ public class Fields {
     public static boolean isClassAvailable(String className) {
         return classAvailableCache.computeIfAbsent(className, cls -> {
             try {
-                Class.forName((String)cls);
+                Class.forName(className);
                 return true;
             } catch (ClassNotFoundException e) {
                 return false;
