@@ -1,0 +1,56 @@
+// Addon file to support Java 17+ compatibility
+// This file is automatically applied by the build script
+
+// Override Java version check to allow Java 17+
+gradle.projectsEvaluated {
+    // Remove the Java 8 version check
+    def checkTask = project.tasks.find { it.name == 'checkJavaVersion' }
+    if (checkTask) {
+        checkTask.enabled = false
+    }
+}
+
+// Add JVM arguments for Java 17+ compatibility
+ext {
+    // Add exports for reflection access in Java 17+
+    jvmArguments = [
+        '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
+        '--add-opens', 'java.base/java.lang.reflect=ALL-UNNAMED',
+        '--add-opens', 'java.base/java.util=ALL-UNNAMED',
+        '--add-opens', 'java.desktop/sun.awt=ALL-UNNAMED',
+        '--add-opens', 'java.desktop/sun.java2d=ALL-UNNAMED',
+        '--add-exports', 'java.base/sun.nio.ch=ALL-UNNAMED',
+        '--add-exports', 'jdk.unsupported/sun.misc=ALL-UNNAMED'
+    ]
+}
+
+// Modify run configurations to include Java 17+ compatibility arguments
+project.afterEvaluate {
+    if (project.hasProperty('runClient')) {
+        runClient {
+            jvmArgs(project.ext.jvmArguments)
+        }
+    }
+    if (project.hasProperty('runServer')) {
+        runServer {
+            jvmArgs(project.ext.jvmArguments)
+        }
+    }
+}
+
+// Configure Java toolchain for Java 17 compatibility
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+// Add compiler arguments for better compatibility
+tasks.withType(JavaCompile) {
+    options.compilerArgs += [
+        '-XDignore.symbol.file',
+        '-Xlint:-options'
+    ]
+}
+
+println "Java 17+ compatibility configuration applied"

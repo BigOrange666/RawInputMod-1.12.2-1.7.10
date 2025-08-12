@@ -12,6 +12,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MouseHelper;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import org.apache.commons.lang3.ArrayUtils;
+import mod.seanld.rawinput.reflect.Fields;
 
 public class RawInputHandler {
     public static Controller[] controllers;
@@ -87,15 +88,34 @@ public class RawInputHandler {
         float saveYaw = player.rotationYaw;
         float savePitch = player.rotationPitch;
 
-        if (Minecraft.getMinecraft().mouseHelper instanceof RawMouseHelper) {
-            Minecraft.getMinecraft().mouseHelper = new MouseHelper();
-            Minecraft.getMinecraft().mouseHelper.grabMouseCursor();
-            Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Toggled OFF"));
-        } else {
-            Minecraft.getMinecraft().mouseHelper = new RawMouseHelper();
-            Minecraft.getMinecraft().mouseHelper.grabMouseCursor();
-            Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Toggled ON"));
+        try {
+            // 使用反射来安全地访问Minecraft实例的mouseHelper字段
+            MouseHelper currentHelper = Fields.getField(Minecraft.getMinecraft(), "mouseHelper");
+            
+            if (currentHelper instanceof RawMouseHelper) {
+                MouseHelper newHelper = new MouseHelper();
+                Fields.setField(Minecraft.getMinecraft(), "mouseHelper", newHelper);
+                newHelper.grabMouseCursor();
+                Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Toggled OFF"));
+            } else {
+                MouseHelper newHelper = new RawMouseHelper();
+                Fields.setField(Minecraft.getMinecraft(), "mouseHelper", newHelper);
+                newHelper.grabMouseCursor();
+                Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Toggled ON"));
+            }
+        } catch (Exception e) {
+            // 回退到直接访问（在旧版本Java中）
+            if (Minecraft.getMinecraft().mouseHelper instanceof RawMouseHelper) {
+                Minecraft.getMinecraft().mouseHelper = new MouseHelper();
+                Minecraft.getMinecraft().mouseHelper.grabMouseCursor();
+                Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Toggled OFF"));
+            } else {
+                Minecraft.getMinecraft().mouseHelper = new RawMouseHelper();
+                Minecraft.getMinecraft().mouseHelper.grabMouseCursor();
+                Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("Toggled ON"));
+            }
         }
+        
         player.rotationYaw = saveYaw;
         player.rotationPitch = savePitch;
     }

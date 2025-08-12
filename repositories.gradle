@@ -1,5 +1,40 @@
 // Add any additional repositories for your dependencies here
 
 repositories {
-
+    mavenCentral()
+    
+    maven {
+        name = "Eclipse JDT"
+        url = "https://repo.eclipse.org/content/repositories/jdt-releases/"
+    }
+    
+    maven {
+        name = "Eclipse Snapshots"
+        url = "https://repo.eclipse.org/content/repositories/jdt-snapshots/"
+    }
+    
+    maven {
+        name = "Maven Central"
+        url = "https://repo1.maven.org/maven2/"
+    }
+    
+    maven {
+        name = "Forge Maven"
+        url = "https://maven.minecraftforge.net/"
+    }
+    
+    maven {
+        name = "GTNH Maven"
+        url = "http://jenkins.usrv.eu:8081/nexus/content/groups/public/"
+    }
+    
+    maven {
+        name = "Sonatype Snapshots"
+        url = "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+    
+    maven {
+        name = "Gradle Plugins"
+        url = "https://plugins.gradle.org/m2/"
+    }
 }
