@@ -37,4 +37,25 @@ repositories {
         name = "Gradle Plugins"
         url = "https://plugins.gradle.org/m2/"
     }
+    
+    maven {
+        name = "Eclipse Maven"
+        url = "https://mvnrepository.com/artifact/org.eclipse.jdt"
+    }
+    
+    maven {
+        name = "Apache Maven"
+        url = "https://repo.maven.apache.org/maven2/"
+    }
+    
+    // 添加更多可能的仓库来解决依赖问题
+    maven {
+        name = "JBoss Thirdparty"
+        url = "https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/"
+    }
+    
+    maven {
+        name = "Central"
+        url = "https://central.maven.org/maven2/"
+    }
 }
